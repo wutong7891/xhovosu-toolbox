@@ -1,0 +1,60 @@
+name: Build XhovoSU Toolbox
+
+# 把 tools/xhovosu-toolbox 打包成单文件 Windows exe。
+# 只依赖 Python 标准库，PyInstaller 一个参数就能打出来。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main", "master"]
+    paths:
+      - '.github/workflows/build-toolbox.yml'
+      - 'tools/xhovosu-toolbox/**'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Syntax check
+        working-directory: tools/xhovosu-toolbox
+        run: python -m py_compile xhovosu_toolbox.py
+
+      - name: Install PyInstaller
+        run: python -m pip install --upgrade pip pyinstaller
+
+      - name: Build exe
+        working-directory: tools/xhovosu-toolbox
+        run: |
+          pyinstaller --noconfirm --clean --onefile --windowed `
+            --name XhovoSU-Toolbox `
+            --distpath dist --workpath build --specpath build `
+            xhovosu_toolbox.py
+
+      - name: Show result
+        working-directory: tools/xhovosu-toolbox
+        run: |
+          Get-ChildItem dist
+          $f = Get-Item dist/XhovoSU-Toolbox.exe
+          "SIZE={0:N2} MB" -f ($f.Length / 1MB)
+          (Get-FileHash dist/XhovoSU-Toolbox.exe -Algorithm SHA256).Hash | Out-File dist/SHA256.txt
+          Get-Content dist/SHA256.txt
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: XhovoSU-Toolbox
+          path: |
+            tools/xhovosu-toolbox/dist/XhovoSU-Toolbox.exe
+            tools/xhovosu-toolbox/dist/SHA256.txt
+          if-no-files-found: error
