@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>XhovoSU 定制工具箱</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 液态背景：三团会缓慢漂移的色块，被玻璃层模糊折射 -->
+<div class="fluid-field" aria-hidden="true">
+  <span class="blob b1"></span>
+  <span class="blob b2"></span>
+  <span class="blob b3"></span>
+  <span class="blob b4"></span>
+</div>
+<svg class="fluid-filter" aria-hidden="true">
+  <defs>
+    <filter id="goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="26" result="blur"/>
+      <feColorMatrix in="blur" mode="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 26 -12" result="goo"/>
+      <feBlend in="SourceGraphic" in2="goo"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- 欢迎动画 -->
+<section id="boot" class="boot">
+  <div class="boot-glow"></div>
+  <div class="boot-line" id="bootLine">欢迎使用定制工具箱</div>
+  <div class="boot-sub" id="bootSub">XhovoSU · 一键 ROOT</div>
+  <div class="boot-bar"><i></i></div>
+</section>
+
+<!-- 主界面 -->
+<main id="app" class="app" aria-hidden="true">
+
+  <header class="head">
+    <div class="brand">
+      <span class="dot"></span>
+      <h1>定制工具箱</h1>
+      <em>v1.0.0</em>
+    </div>
+    <div class="head-status" id="headStatus">就绪</div>
+  </header>
+
+  <section class="device glass" id="deviceCard">
+    <div class="card-title">
+      <span>设备</span>
+      <button class="mini" id="btnScan">检测</button>
+    </div>
+    <div class="grid" id="infoGrid">
+      <div class="cell"><label>序列号</label><b id="iSerial">—</b></div>
+      <div class="cell"><label>机型</label><b id="iModel">—</b></div>
+      <div class="cell"><label>Android</label><b id="iAndroid">—</b></div>
+      <div class="cell"><label>分区</label><b id="iSlot">—</b></div>
+      <div class="cell"><label>KMI</label><b id="iKmi">—</b></div>
+      <div class="cell"><label>ROOT</label><b id="iRoot">—</b></div>
+    </div>
+  </section>
+
+  <section class="steps">
+    <article class="glass step" data-step="1">
+      <div class="num">01</div>
+      <h2>环境</h2>
+      <p id="envText">检查 adb 与 fastboot</p>
+      <button class="act" id="btnEnv">自检</button>
+      <button class="act ghost" id="btnTools">下载 tools</button>
+    </article>
+
+    <article class="glass step" data-step="2">
+      <div class="num">02</div>
+      <h2>镜像</h2>
+      <p id="imageText">未选择 init_boot.img</p>
+      <button class="act" id="btnImage">选择镜像</button>
+      <button class="act ghost" id="btnDump">从设备导出</button>
+    </article>
+
+    <article class="glass step" data-step="3">
+      <div class="num">03</div>
+      <h2>修补</h2>
+      <p id="patchText">解包并检查 kernel 段</p>
+      <button class="act" id="btnPatch">开始修补</button>
+    </article>
+
+    <article class="glass step" data-step="4">
+      <div class="num">04</div>
+      <h2>刷入</h2>
+      <p id="flashText">自动进 fastboot 并写入</p>
+      <button class="act" id="btnBootloader">进 Fastboot</button>
+      <button class="act danger" id="btnFlash">刷入并重启</button>
+    </article>
+
+    <article class="glass step" data-step="5">
+      <div class="num">05</div>
+      <h2>面具</h2>
+      <p id="appText">安装 XhovoSU Manager</p>
+      <button class="act" id="btnApp">选择 APK</button>
+    </article>
+  </section>
+
+  <section class="glass logbox">
+    <div class="card-title">
+      <span>日志</span>
+      <button class="mini" id="btnClearLog">清空</button>
+    </div>
+    <pre id="log"></pre>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
