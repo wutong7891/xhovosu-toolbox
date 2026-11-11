@@ -38,12 +38,13 @@ jobs:
       - name: Build exe
         working-directory: tools/xhovosu-toolbox
         run: |
+          # spec 文件留在当前目录，否则 --add-data 的相对路径会被解析到 build/ 下
           pyinstaller --noconfirm --clean --onefile --windowed `
             --name XhovoSU-Toolbox `
             --add-data "ui;ui" `
             --hidden-import webview.platforms.edgechromium `
             --hidden-import clr `
-            --distpath dist --workpath build --specpath build `
+            --distpath dist --workpath build `
             main.py
 
       - name: Report
